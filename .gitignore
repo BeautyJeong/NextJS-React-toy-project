@@ -35,5 +35,12 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# IDE
-/.idea/
+# 에디터 파일 또는 폴더
+.idea
+.idea/
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*
