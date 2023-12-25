@@ -32,6 +32,9 @@ export default function Home() {
     const [emailValid, setEmailValid] = useState<boolean>(false);
     const [pwValid, setPwValid] = useState<boolean>(false);
 
+    //로그인 버튼 비활성화
+    const [notAllow, setNotAllow] = useState(true);
+
     const handleEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
         const emailValue = e.target.value
         setEmail(emailValue);
@@ -42,6 +45,15 @@ export default function Home() {
             setEmailValid(false);
         }
     }
+
+    //emailValid, pwValid state이 변경될 때마다 로그인 버튼 활성화 여부 판단
+    useEffect(() => {
+        if (emailValid && pwValid) {
+            setNotAllow(false);
+            return;
+        }
+        setNotAllow(true);
+    }, [emailValid, pwValid])
 
     const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
         const passwordValue = e.target.value
@@ -115,7 +127,7 @@ export default function Home() {
                         fullWidth
                         variant="contained"
                         sx={{mt: 3, mb: 2, bgcolor: (theme) => theme.palette.primary.dark}}
-                        disabled={true}
+                        disabled={notAllow}
                     >
                         로그인
                     </Button>
