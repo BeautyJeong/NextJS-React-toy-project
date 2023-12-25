@@ -24,8 +24,35 @@ const theme = createTheme({
 });
 
 export default function Home() {
-    const [email, setEmail] = useState('');
-    const [pw, setPw] = useState('');
+    // input value값 업데이트
+    const [email, setEmail] = useState<string>('');
+    const [pw, setPw] = useState<string>('');
+
+    //input value값이 유효한지 확인
+    const [emailValid, setEmailValid] = useState<boolean>(false);
+    const [pwValid, setPwValid] = useState<boolean>(false);
+
+    const handleEmail = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const emailValue = e.target.value
+        setEmail(emailValue);
+        const regex = /^(([^<>()\[\].,;:\s@"]+(\.[^<>()\[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i;
+        if (regex.test(emailValue)) {
+            setEmailValid(true);
+        } else {
+            setEmailValid(false);
+        }
+    }
+
+    const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const passwordValue = e.target.value
+        setPw(passwordValue);
+        const regex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+])(?!.*[^a-zA-z0-9$`~!@$!%*#^?&\\(\\)\-_=+]).{8,20}$/;
+        if (regex.test(passwordValue)) {
+            setPwValid(true);
+        } else {
+            setPwValid(false);
+        }
+    }
 
     return (
         <ThemeProvider theme={theme}>
@@ -57,7 +84,12 @@ export default function Home() {
                         name="email"
                         autoComplete="email"
                         autoFocus
+                        value={email}
+                        onChange={handleEmail}
                     />
+                    <Typography>
+                        {!emailValid && email.length > 0 && ('올바른 이메일을 입력해주세요.')}
+                    </Typography>
                     <TextField
                         margin="normal"
                         required
@@ -66,7 +98,12 @@ export default function Home() {
                         label="비밀번호를 입력해주세요"
                         type="password"
                         autoComplete="current-password"
+                        value={pw}
+                        onChange={handlePassword}
                     />
+                    <Typography>
+                        {!pwValid && pw.length > 0 && ('영문, 숫자, 특수문자 포함 8자 이상 입력해주세요.')}
+                    </Typography>
                     <Grid>
                         <FormControlLabel //label 클릭해도 Checkbox가 체크되도록
                             control={<Checkbox value="remember" color="primary"/>}
