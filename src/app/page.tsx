@@ -46,6 +46,17 @@ export default function Home() {
         }
     }
 
+    const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const passwordValue = e.target.value
+        setPw(passwordValue);
+        const regex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+])(?!.*[^a-zA-z0-9$`~!@$!%*#^?&\\(\\)\-_=+]).{8,20}$/;
+        if (regex.test(passwordValue)) {
+            setPwValid(true);
+        } else {
+            setPwValid(false);
+        }
+    }
+
     //emailValid, pwValid state이 변경될 때마다 로그인 버튼 활성화 여부 판단
     useEffect(() => {
         if (emailValid && pwValid) {
@@ -55,14 +66,16 @@ export default function Home() {
         setNotAllow(true);
     }, [emailValid, pwValid])
 
-    const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const passwordValue = e.target.value
-        setPw(passwordValue);
-        const regex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+])(?!.*[^a-zA-z0-9$`~!@$!%*#^?&\\(\\)\-_=+]).{8,20}$/;
-        if (regex.test(passwordValue)) {
-            setPwValid(true);
+    const User = {
+        email: 'wjdqbxl@naver.com',
+        pw: 'test1111@@@'
+    }
+
+    const onClickConfirmButton = () => {
+        if (email === User.email && pw === User.pw) {
+            alert('로그인 성공!');
         } else {
-            setPwValid(false);
+            alert('로그인 실패ㅜㅜ');
         }
     }
 
@@ -128,6 +141,7 @@ export default function Home() {
                         variant="contained"
                         sx={{mt: 3, mb: 2, bgcolor: (theme) => theme.palette.primary.dark}}
                         disabled={notAllow}
+                        onClick={onClickConfirmButton}
                     >
                         로그인
                     </Button>
