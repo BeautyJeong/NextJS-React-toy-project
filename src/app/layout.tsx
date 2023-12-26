@@ -1,6 +1,6 @@
 import type {Metadata} from 'next'
 import './globals.css'
-import Link from "@mui/material/Link";
+import Link from 'next/link';
 /* import Logo from "@/app/components/logo"; //전체 페이지에 서경대 로고 추가*/
 
 export const metadata: Metadata = {
