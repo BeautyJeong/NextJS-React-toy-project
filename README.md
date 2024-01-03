@@ -10,7 +10,7 @@
 
 ## [프로젝트 구조](https://nextjs.org/docs/getting-started/project-structure): page, layout
 
-### src/app/page.tsx
+### src/app/layout.tsx
 
 - 기본적인 웹 페이지의 골격
 
@@ -65,12 +65,57 @@
 
 ```mermaid
 flowchart LR
-A[로그인] --> B(대시보드)
-B --> C(전화번호부)
-B --> D(대학기구표)
-C --> E(캠퍼스맵)
+    A[로그인] --> B(대시보드)
+    B --> C(전화번호부)
+    B --> D(대학기구표)
+    C --> E(캠퍼스맵)
 ```
+
+<<<<<<< HEAD
 
 ## MUI(Material UI)
 
 - [로그인 페이지 템플릿](https://mui.com/material-ui/getting-started/templates/)
+
+## 로그인 로컬 테스트
+
+1. 로컬 라라벨 백엔드 서버 켜기 `php artisan serve`
+
+- 나는 이미 [laravel passsport 인증](https://jjong-factory.tistory.com/91)까지 구축되어 있는 homepage-backend-template을 사용하였음
+
+2. 로그인 버튼을 클릭했을 때 계정이 백엔드로 post 되도록 설정
+
+- 주고 받는 통신을 위해 **axios** 사용
+- post 되는 주소는 백엔드 서버 주소 http://localhost:8000/api/login
+- 백엔드에서 요구하는 형식을 맞춰 email, password, type 작성
+
+```agsl
+    const onClickConfirmButton = async () => {
+        try {
+            const response = await axios.post('http://localhost:8000/api/login', {
+                email,
+                password,
+                type: "email",
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+        } catch (e) {
+
+        }
+    }
+```
+
+3. 로그인이 잘 되는지 확인하기
+
+- 올바른 계정으로 로그인 했을 때 `개발자 도구 > 네트워크 > 헤더(Headers)`: Status Code가 200이면 로그인 성공
+  ![img.png](img.png)
+- `개발자 도구 > 네트워크 > 페이로드(Payload)`: 요청 형식 확인
+  ![img_1.png](img_1.png)
+- `개발자 도구 > 네트워크 > 응답(Response)`: 토큰 발급 확인
+  ![img_2.png](img_2.png)
+
+4. Postman으로 확인하기
+   ![img_3.png](img_3.png)
+
