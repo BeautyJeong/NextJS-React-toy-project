@@ -1,8 +1,5 @@
 'use client'
-import Image from 'next/image'
-import styles from './page.module.css'
 import {useEffect, useState} from "react";
-import {createTheme, ThemeProvider} from '@mui/material/styles';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'; /* 아이콘은 따로 설치해줘야 함 */
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -14,6 +11,8 @@ import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
+import axios from 'axios';
+import {createTheme, ThemeProvider} from "@mui/material";
 
 const theme = createTheme({
     palette: {
@@ -26,7 +25,7 @@ const theme = createTheme({
 export default function Home() {
     // input value값 업데이트
     const [email, setEmail] = useState<string>('');
-    const [pw, setPw] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
 
     //input value값이 유효한지 확인
     const [emailValid, setEmailValid] = useState<boolean>(false);
@@ -48,13 +47,15 @@ export default function Home() {
 
     const handlePassword = (e: React.ChangeEvent<HTMLInputElement>) => {
         const passwordValue = e.target.value
-        setPw(passwordValue);
-        const regex = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+])(?!.*[^a-zA-z0-9$`~!@$!%*#^?&\\(\\)\-_=+]).{8,20}$/;
+        setPassword(passwordValue);
+        //영문자(a-zA-Z)와 숫자(0-9)가 최소한 한 번 이상 나타나며, 전체 길이가 최소 6자 이상
+        const regex = /^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$/;
         if (regex.test(passwordValue)) {
             setPwValid(true);
         } else {
             setPwValid(false);
         }
+        setPwValid(true);
     }
 
     //emailValid, pwValid state이 변경될 때마다 로그인 버튼 활성화 여부 판단
@@ -66,18 +67,31 @@ export default function Home() {
         setNotAllow(true);
     }, [emailValid, pwValid])
 
-    const User = {
-        email: 'wjdqbxl@naver.com',
-        pw: 'test1111@@@'
-    }
+    const onClickConfirmButton = async () => {
+        try {
+            const response = await axios.post('http://localhost:8000/api/login', {
+                email,
+                password,
+                type: "email",
+            }, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+        } catch (e) {
 
-    const onClickConfirmButton = () => {
-        if (email === User.email && pw === User.pw) {
-            alert('로그인 성공!');
-        } else {
-            alert('로그인 실패ㅜㅜ');
         }
     }
+
+    /*
+        const onClickConfirmButton = () => {
+            if (email === User.email && password === User.pw) {
+                alert('로그인 성공!');
+            } else {
+                alert('로그인 실패ㅜㅜ');
+            }
+        }
+    */
 
     return (
         <ThemeProvider theme={theme}>
@@ -123,11 +137,11 @@ export default function Home() {
                         label="비밀번호를 입력해주세요"
                         type="password"
                         autoComplete="current-password"
-                        value={pw}
+                        value={password}
                         onChange={handlePassword}
                     />
                     <Typography>
-                        {!pwValid && pw.length > 0 && ('영문, 숫자, 특수문자 포함 8자 이상 입력해주세요.')}
+                        {!pwValid && password.length > 0 && ('영문, 숫자, 특수문자 포함 8자 이상 입력해주세요.')}
                     </Typography>
                     <Grid>
                         <FormControlLabel //label 클릭해도 Checkbox가 체크되도록
