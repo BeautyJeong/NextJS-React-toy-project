@@ -82,6 +82,7 @@ export default function Home() {
             // 요청이 성공하고 status code가 200인 경우
             if (response.status === 200) {
                 alert('로그인 성공!');
+                (inputRef.current as any).focus();
             } else {
                 // 다른 상태 코드가 반환되면 여기에 처리 로직 추가
                 alert('로그인 실패ㅜㅜ');
