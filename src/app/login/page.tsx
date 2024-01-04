@@ -1,5 +1,5 @@
 'use client'
-import {useEffect, useState} from "react";
+import {useEffect, useState, useRef} from "react";
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined'; /* 아이콘은 따로 설치해줘야 함 */
 import Container from '@mui/material/Container';
 import Box from '@mui/material/Box';
@@ -11,7 +11,7 @@ import Button from '@mui/material/Button';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
-import axios from 'axios';
+import axios, {AxiosError} from 'axios';
 import {createTheme, ThemeProvider} from "@mui/material";
 
 const theme = createTheme({
@@ -78,20 +78,35 @@ export default function Home() {
                     'Content-Type': 'application/json',
                 }
             });
-        } catch (e) {
 
+            // 요청이 성공하고 status code가 200인 경우
+            if (response.status === 200) {
+                alert('로그인 성공!');
+            } else {
+                // 다른 상태 코드가 반환되면 여기에 처리 로직 추가
+                alert('로그인 실패ㅜㅜ');
+            }
+
+        } catch (error) {
+            // 요청이 실패했을 때의 처리
+            if ((error as AxiosError).response?.status === 401) {
+                // 예를 들어, 401은 인증 실패를 나타낼 수 있습니다.
+                alert('인증 실패: 잘못된 이메일 또는 비밀번호입니다.');
+            } else {
+                alert('로그인 요청 실패ㅜㅜ');
+            }
         }
     }
 
-    /*
-        const onClickConfirmButton = () => {
-            if (email === User.email && password === User.pw) {
-                alert('로그인 성공!');
-            } else {
-                alert('로그인 실패ㅜㅜ');
-            }
-        }
-    */
+
+    /* useRef 예제: DOM 요소 접근 */
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        console.log(inputRef);
+        (inputRef.current as any).focus();
+    }, []);
+
 
     return (
         <ThemeProvider theme={theme}>
@@ -115,6 +130,8 @@ export default function Home() {
                     <Typography component="h1" variant="h5">{/*h1태그를 사용하지만 스타일은 h5로*/}
                         이메일과 비밀번호를 입력해주세요
                     </Typography>
+                    {/* 이름 input은 useRef 예시*/}
+                    <input ref={inputRef} type="text" placeholder="이름을 입력해주세요"/>
                     <TextField
                         margin="normal"
                         required
@@ -122,7 +139,7 @@ export default function Home() {
                         label="이메일을 입력해주세요"
                         name="email"
                         autoComplete="email"
-                        autoFocus
+                        // autoFocus
                         value={email}
                         onChange={handleEmail}
                     />
@@ -141,7 +158,7 @@ export default function Home() {
                         onChange={handlePassword}
                     />
                     <Typography>
-                        {!pwValid && password.length > 0 && ('영문, 숫자, 특수문자 포함 8자 이상 입력해주세요.')}
+                        {!pwValid && password.length > 0 && ('영문, 숫자 포함 6자 이상 입력해주세요.')}
                     </Typography>
                     <Grid>
                         <FormControlLabel //label 클릭해도 Checkbox가 체크되도록
